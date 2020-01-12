@@ -9,6 +9,9 @@
     <ApplicationIcon />
     <StartupObject></StartupObject>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Description>An easy stupid extra library for .net.</Description>
+    <PackageProjectUrl>https://github.com/DroidBeta/tenky</PackageProjectUrl>
+    <PackageId>DroidBeta.Tenky</PackageId>
   </PropertyGroup>
 
 </Project>
