@@ -124,5 +124,12 @@ namespace DroidBeta.Tenky.Extension
             }
             return tmp.ToInt();
         }
+
+        public static bool StartsWith(this int input, int value) => input.ToString().StartsWith(value.ToString());
+
+        public static bool EndsWith(this int input, int value) => input.ToString().EndsWith(value.ToString());
+        //EndsWith(int, int) has another way to write
+        //return (input % 10) == value
+
     }
 }
