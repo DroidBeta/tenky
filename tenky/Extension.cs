@@ -56,7 +56,7 @@ namespace DroidBeta.Tenky.Extension
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static string Capitalize(this string str) => str.Substring(0, 1).ToUpper() + str[1..].ToLower();
+        public static string Capitalize(this string str) => str.Substring(0, 1).ToUpper() + str.Substring(1).ToLower();
 
     }
 
