@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DroidBeta.Tenky.Extension
 {
@@ -50,6 +48,10 @@ namespace DroidBeta.Tenky.Extension
                 return false;
             }
         }
+
+        public static string[] Split(this string input, string separator) => input.Split(separator, StringSplitOptions.None);
+
+        public static string[] Split(this string input, string separator, StringSplitOptions options) => input.Split(new string[] {separator}, options);
 
         public static int ToInt(this string input) => int.Parse(input);
 
@@ -110,7 +112,7 @@ namespace DroidBeta.Tenky.Extension
             return imei14.Append(sum);
         }
 
-        public static int GetLength(this int interger) => interger.ToString().Length;
+        public static int GetLength(this int interger) => (int)Math.Log10(interger);
 
         public static int SubInt(this int num, int startIndex) => num.SubInt(startIndex, num.GetLength() - 1);
         public static int SubInt(this int num, int startIndex, int length) => int.Parse(num.ToString().Substring(startIndex, length));
