@@ -1,4 +1,7 @@
-﻿using System;
+﻿using System.Text.RegularExpressions;
+using System.Data;
+using System;
+using System.Net;
 
 namespace DroidBeta.Tenky.Extension
 {
@@ -61,6 +64,49 @@ namespace DroidBeta.Tenky.Extension
         /// <param name="str"></param>
         /// <returns></returns>
         public static string Capitalize(this string str) => str.Substring(0, 1).ToUpper() + str.Substring(1).ToLower();
+
+        public static string GetIpFamily(this string ip)
+        {
+            string input = "your IP address goes here";
+
+            IPAddress address;
+            if (IPAddress.TryParse(input, out address))
+            {
+                switch (address.AddressFamily)
+                {
+                    case System.Net.Sockets.AddressFamily.InterNetwork:
+                        return "ipv4";
+                    case System.Net.Sockets.AddressFamily.InterNetworkV6:
+                        return "ipv6";
+                    default:
+                        throw new ArgumentException(ip + "is not a valid IP address!");
+                }
+            }
+            else
+            {
+                throw new ArgumentException(ip + "is not a valid IP address!");
+            }
+        }
+
+        public static bool IsIPv4(string ip) => (GetIpFamily(ip) == "ipv4");
+
+        public static bool IsIPv6(string ip) => (GetIpFamily(ip) == "ipv6");
+
+        public static bool IsIP(this string ip)
+        {
+            try
+            {
+                ip.GetIpFamily();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
+
+        public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
 
     }
 

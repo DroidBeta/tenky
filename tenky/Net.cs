@@ -2,6 +2,7 @@
 using System.Text;
 using System.Net;
 using System.IO;
+using DroidBeta.Tenky.Extension;
 
 namespace DroidBeta.Tenky.Net
 {
@@ -57,6 +58,20 @@ namespace DroidBeta.Tenky.Net
 
             return request.GetResponse();
         }
+
+    }
+
+    class IP
+    {
+        private static int _ipv;
+        private static string _ip;
+        IP(string ip)
+        {
+            _ipv = ip.GetIpFamily().Replace("ipv", "").ToInt();
+            _ip = ip;
+        }
+
+
 
     }
 
