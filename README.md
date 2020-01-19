@@ -2,6 +2,9 @@
 
 # Tenky
 
+[![Build Status](https://dev.azure.com/droidbetadev/tenky/_apis/build/status/DroidBeta.tenky?branchName=master)](https://dev.azure.com/droidbetadev/tenky/_build/latest?definitionId=3&branchName=master)
+[![GitHub release](https://img.shields.io/github/release/DroidBeta/tenky.svg)](https://github.com/DroidBeta/tenky/releases/latest)
+
 An easy stupid extra library for .net core
 
 ## Status
@@ -10,14 +13,13 @@ An easy stupid extra library for .net core
 | -- | -- | -- |
 | Extension | Building | Extend methods for .NET |
 | Security | Waiting | Crypto and so on |
-| Web | Waiting | Something for web. Maybe will rename to Net? |
-| Microsoft | None | APIs for MSFT products |
+| Net | Waiting | Something for Net |
 
 ## TODO
 
 - Fullfill APIs
 - API Reference
-- Add ci/cd(Azure DevOps)
+- ~Add ci/cd(Azure DevOps)~
 - ...
 
 ## Contact
