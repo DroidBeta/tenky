@@ -17,10 +17,10 @@ variables:
 steps:
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: './tenky'
+    rootFolderOrFile: '.'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/source.zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Source.zip'
     replaceExistingArchive: true
     verbose: true
   displayName: 'ArchiveSourceCode'
