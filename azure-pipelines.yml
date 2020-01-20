@@ -15,6 +15,16 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: './tenky'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/source.zip'
+    replaceExistingArchive: true
+    verbose: true
+  displayName: 'ArchiveSourceCode'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -34,11 +44,13 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: './tenky'
+    rootFolderOrFile: './tenky/bin/Release'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Release.zip'
     replaceExistingArchive: true
+    verbose: true
+  displayName: 'ArchiveRelease'
 
 - task: CopyFiles@2
   inputs:
