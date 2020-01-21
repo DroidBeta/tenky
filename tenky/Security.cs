@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace DroidBeta.Tenky.Security
 {
-    class Crypto
+    public static class Crypto
     {
         #region define
         private static SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
