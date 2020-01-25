@@ -8,6 +8,7 @@
 
 using System;
 using DroidBeta.Tenky.Extension;
+using DroidBeta.Tenky.Security;
 
 namespace tenky
 {
@@ -15,7 +16,6 @@ namespace tenky
     {
         static void Main(string[] args)
         {
-            
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Security;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace DroidBeta.Tenky.Security
@@ -54,15 +56,26 @@ namespace DroidBeta.Tenky.Security
         }
         #endregion
 
+        public enum Mode { Encrypt = 0, Decrypt = 1};
+
+        //TIP: Length of AES key should be 32
         #region AES
         private const string _defaultAesIv = "0000000000000000";
 
-        public static string Aes(string str, string key) => Aes(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7);
+        public static string Aes(string str, string key) => AesHelper(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Encrypt);
         
-        public static string Aes(string str, string key, string iv) => Aes(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7);
+        public static string Aes(string str, string key, string iv) => AesHelper(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Encrypt);
+
+        public static string DeAes(string str, string key) => AesHelper(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Decrypt);
         
-        public static string Aes(string str, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public static string DeAes(string str, string key, string iv) => AesHelper(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Decrypt);
+
+        public static string AesHelper(string str, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode, Mode mode)
         {
+            if (key.Length != 32)
+            {
+                throw new ArgumentOutOfRangeException("Key length should be 32!");
+            }
             Byte[] keyArray = Encoding.UTF8.GetBytes(key);
             Byte[] toEncryptArray = Encoding.UTF8.GetBytes(str);
             var rijndael = new RijndaelManaged()
@@ -72,30 +85,68 @@ namespace DroidBeta.Tenky.Security
                 Padding = paddingMode,
                 IV = Encoding.UTF8.GetBytes(iv)
             };
-            ICryptoTransform cTransform = rijndael.CreateEncryptor();
-            Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-            return Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            ICryptoTransform cTransform;
+            if (mode == Mode.Encrypt)
+                cTransform = rijndael.CreateEncryptor();
+            else if (mode == Mode.Decrypt)
+                cTransform = rijndael.CreateDecryptor();
+            else
+                throw new ArgumentOutOfRangeException("Mode is not valid");
+            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+
+            rijndael.Dispose();
+            cTransform.Dispose();
+
+            if (mode == Mode.Encrypt)
+                return Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            else
+                return Encoding.UTF8.GetString(resultArray);
+
         }
+        #endregion
 
-        public static string DeAes(string str, string key) => DeAes(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7);
-        
-        public static string DeAes(string str, string key, string iv) => DeAes(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7);
+        #region DES
 
-        public static string DeAes(string str, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
+        private static string _defaultDesIv = "00000000";
+
+        public static string Des(string str, string key) => DesHelper(str, key, _defaultDesIv, Mode.Encrypt);
+
+        public static string Des(string str, string key, string iv) => DesHelper(str, key, iv, Mode.Encrypt);
+
+        public static string DeDes(string str, string key) => DesHelper(str, key, _defaultDesIv, Mode.Decrypt);
+
+        public static string DeDes(string str, string key, string iv) => DesHelper(str, key, iv, Mode.Decrypt);
+
+        public static string DesHelper(string str, string key, string iv, Mode mode)
         {
-            Byte[] keyArray = Encoding.UTF8.GetBytes(key);
-            Byte[] toEncryptArray = Convert.FromBase64String(str);
-            var rijndael = new RijndaelManaged()
-            {
-                Key = keyArray,
-                Mode = cipherMode,
-                Padding = paddingMode,
-                IV = Encoding.UTF8.GetBytes(iv)
-            };
-            ICryptoTransform cTransform = rijndael.CreateDecryptor();
-            Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-            return Encoding.UTF8.GetString(resultArray);
+            if(key.Length != 8)
+                throw new ArgumentOutOfRangeException("Key length should be 8!");
+
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            byte[] inputByteArray = Convert.FromBase64String(str);
+            des.Key = Encoding.UTF8.GetBytes(key);
+            des.IV = Encoding.UTF8.GetBytes(iv);
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs;
+            if (mode == Mode.Encrypt)
+                cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write);
+            else if (mode == Mode.Decrypt)
+                cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write);
+            else
+                throw new ArgumentOutOfRangeException("Mode is not valid");
+            cs.Write(inputByteArray, 0, inputByteArray.Length);
+            cs.FlushFinalBlock();
+
+            cs.Dispose();
+            ms.Dispose();
+            des.Dispose();
+
+            if (mode == Mode.Encrypt)
+                return Convert.ToBase64String(ms.ToArray());
+            else
+                return Encoding.Default.GetString(ms.ToArray());
         }
+
         #endregion
 
     }
