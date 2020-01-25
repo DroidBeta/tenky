@@ -2,6 +2,8 @@
 using System.Data;
 using System;
 using System.Net;
+using System.IO;
+using System.Text;
 
 namespace DroidBeta.Tenky.Extension
 {
@@ -67,10 +69,7 @@ namespace DroidBeta.Tenky.Extension
 
         public static string GetIpFamily(this string ip)
         {
-            string input = "your IP address goes here";
-
-            IPAddress address;
-            if (IPAddress.TryParse(input, out address))
+            if (IPAddress.TryParse(ip, out IPAddress address))
             {
                 switch (address.AddressFamily)
                 {
@@ -180,4 +179,23 @@ namespace DroidBeta.Tenky.Extension
         //return (input % 10) == value
 
     }
+
+    public static class WebResponseExtension
+    {
+        public static string GetStreamString(this WebResponse webResponse) => GetStreamString(webResponse, Encoding.UTF8);
+        public static string GetStreamString(this WebResponse webResponse, Encoding encoding)
+        {
+            Stream stream = webResponse.GetResponseStream();
+            string responseStr = "";
+            if (stream != null)
+            {
+                StreamReader reader = new StreamReader(stream, encoding);
+                responseStr = reader.ReadToEnd();
+                reader.Close();
+            }
+            webResponse.Close();
+            return responseStr;
+        }
+    }
+
 }

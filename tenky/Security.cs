@@ -9,11 +9,11 @@ namespace DroidBeta.Tenky.Security
     public static class Crypto
     {
         #region define
-        private static SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
-        private static SHA256CryptoServiceProvider _sha256 = new SHA256CryptoServiceProvider();
-        private static SHA384CryptoServiceProvider _sha384 = new SHA384CryptoServiceProvider();
-        private static SHA512CryptoServiceProvider _sha512 = new SHA512CryptoServiceProvider();
-        private static MD5CryptoServiceProvider _md5 = new MD5CryptoServiceProvider();
+        private static readonly SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
+        private static readonly SHA256CryptoServiceProvider _sha256 = new SHA256CryptoServiceProvider();
+        private static readonly SHA384CryptoServiceProvider _sha384 = new SHA384CryptoServiceProvider();
+        private static readonly SHA512CryptoServiceProvider _sha512 = new SHA512CryptoServiceProvider();
+        private static readonly MD5CryptoServiceProvider _md5 = new MD5CryptoServiceProvider();
         #endregion
 
         public static string MD5(string str)
@@ -55,7 +55,7 @@ namespace DroidBeta.Tenky.Security
         #endregion
 
         #region AES
-        private static string _defaultAesIv = "0000000000000000";
+        private const string _defaultAesIv = "0000000000000000";
 
         public static string Aes(string str, string key) => Aes(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7);
         
