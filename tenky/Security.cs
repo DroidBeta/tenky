@@ -56,18 +56,18 @@ namespace DroidBeta.Tenky.Security
         }
         #endregion
 
-        public enum Mode { Encrypt = 0, Decrypt = 1};
+        public enum Mode { Encrypt = 0, Decrypt = 1 };
 
         //TIP: Length of AES key should be 32
         #region AES
         private const string _defaultAesIv = "0000000000000000";
 
         public static string Aes(string str, string key) => AesHelper(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Encrypt);
-        
+
         public static string Aes(string str, string key, string iv) => AesHelper(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Encrypt);
 
         public static string DeAes(string str, string key) => AesHelper(str, key, _defaultAesIv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Decrypt);
-        
+
         public static string DeAes(string str, string key, string iv) => AesHelper(str, key, iv, CipherMode.ECB, PaddingMode.PKCS7, Mode.Decrypt);
 
         public static string AesHelper(string str, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode, Mode mode)
@@ -119,7 +119,7 @@ namespace DroidBeta.Tenky.Security
 
         public static string DesHelper(string str, string key, string iv, Mode mode)
         {
-            if(key.Length != 8)
+            if (key.Length != 8)
                 throw new ArgumentOutOfRangeException("Key length should be 8!");
 
             DESCryptoServiceProvider des = new DESCryptoServiceProvider();
@@ -149,6 +149,55 @@ namespace DroidBeta.Tenky.Security
 
         #endregion
 
+        #region CRC32
+        public static ulong[] Crc32Table
+        {
+            get
+            {
+                if (Crc32Table == null)
+                {
+                    Crc32Table = new ulong[256];
+                    Crc32Table = GetCRC32Table();
+                }
+                return Crc32Table;
+            }
+
+            private set { }
+        }
+
+        public static ulong[] GetCRC32Table()
+        {
+            ulong Crc;
+            var _tmp = new ulong[256];
+            int i, j;
+            for (i = 0; i < 256; i++)
+            {
+                Crc = (ulong)i;
+                for (j = 8; j > 0; j--)
+                {
+                    if ((Crc & 1) == 1)
+                        Crc = (Crc >> 1) ^ 0xEDB88320;
+                    else
+                        Crc >>= 1;
+                }
+                _tmp[i] = Crc;
+            }
+            return _tmp;
+        }
+
+        public static ulong CRC32(string input)
+        {
+            byte[] buffer = Encoding.ASCII.GetBytes(input); ulong value = 0xffffffff;
+            int len = buffer.Length;
+            for (int i = 0; i < len; i++)
+            {
+                value = (value >> 8) ^ Crc32Table[(value & 0xFF) ^ buffer[i]];
+            }
+            return value ^ 0xffffffff;
+        }
+
+        public static string CRC32b(string input) => CRC32(input).ToString("x");
+        #endregion
     }
 
 }

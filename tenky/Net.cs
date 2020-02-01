@@ -30,15 +30,10 @@ namespace DroidBeta.Tenky.Net
         public static string GetStr(string url, bool IsUseProxy = true) => GetResponse(url, null, null, null, null, IsUseProxy).GetStreamString();
 
         public static string GetStr(string url, int timeoutSecond, bool IsUseProxy = true) => GetResponse(url, timeoutSecond, null, null, null, IsUseProxy).GetStreamString();
-        
+
+        public static string GetStr(string url, int? timeoutSecond, string userAgent, string referer, CookieCollection cookies, bool IsUseProxy = true) => GetResponse(url, timeoutSecond, userAgent, referer, cookies, IsUseProxy).GetStreamString();
+
         #endregion
-
-        public static string GetStr(string url, int? timeoutSecond, string userAgent, string referer, CookieCollection cookies, bool IsUseProxy = true)
-        {
-            WebResponse response = GetResponse(url, timeoutSecond, userAgent, referer, cookies, IsUseProxy);
-
-            return response.GetStreamString();
-        }
 
         #region GetResponse Linkers
         public static WebResponse GetResponse(string url, bool IsUseProxy = true) => GetResponse(url, null, null, null, null, IsUseProxy);
@@ -84,7 +79,7 @@ namespace DroidBeta.Tenky.Net
         private const string _defaultContentType = "application/x-www-form-urlencoded";
 
         #region PostResponse Linkers
-        public static WebResponse PostResponse(string url, string postContent, ICredentials credentials = null, bool IsUseProxy = true) => PostResponse(url, postContent, _defaultContentType, null,  null, null, credentials, IsUseProxy);
+        public static WebResponse PostResponse(string url, string postContent, ICredentials credentials = null, bool IsUseProxy = true) => PostResponse(url, postContent, _defaultContentType, null, null, null, credentials, IsUseProxy);
 
         public static WebResponse PostResponse(string url, string postContent, string contentType, bool IsUseProxy = true) => PostResponse(url, postContent, contentType, null, null, null, null, IsUseProxy);
 
@@ -141,6 +136,19 @@ namespace DroidBeta.Tenky.Net
             }
 
         }
+
+        #region PostStr Linkers
+        public static string PostStr(string url, string postContent, ICredentials credentials = null, bool IsUseProxy = true) => PostResponse(url, postContent, _defaultContentType, null, null, null, credentials, IsUseProxy).GetStreamString();
+
+        public static string PostStr(string url, string postContent, string contentType, bool IsUseProxy = true) => PostResponse(url, postContent, contentType, null, null, null, null, IsUseProxy).GetStreamString();
+
+        public static string PostStr(string url, string postContent, string contentType, ICredentials credentials = null, bool IsUseProxy = true) => PostResponse(url, postContent, contentType, null, null, null, credentials, IsUseProxy).GetStreamString();
+
+        public static string PostStr(string url, string postContent, string contentType, int timeoutSecond = 5, bool IsUseProxy = true) => PostResponse(url, postContent, contentType, timeoutSecond, null, null, null, IsUseProxy).GetStreamString();
+
+        public static string PostStr(string url, string postContent, string contentType, CookieCollection cookies, bool IsUseProxy = true) => PostResponse(url, postContent, contentType, null, null, cookies, null, IsUseProxy).GetStreamString();
+
+        #endregion
 
     }
 
